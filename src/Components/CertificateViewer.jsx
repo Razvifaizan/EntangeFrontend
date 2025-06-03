@@ -1,12 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import axios from 'axios';
+import '../assets/Certificate1.css';
 
 const CertificateViewer = () => {
   const [rollNumber, setRollNumber] = useState('');
   const [certificate, setCertificate] = useState(null);
   const [error, setError] = useState('');
-
-  
 
   const fetchCertificate = async () => {
     try {
@@ -15,36 +14,64 @@ const CertificateViewer = () => {
       setError('');
     } catch (err) {
       setCertificate(null);
-      setError('Certificate not found or course incomplete');
+      setError('❌ Certificate not found or course incomplete');
     }
   };
 
   return (
-    <div className="max-w-md mx-auto p-4 border rounded shadow bg-white">
-      <h2 className="text-xl font-bold mb-4">Find Certificate</h2>
+    <div className="certificate-container">
+      <h2 className="title">🎓 Find Your Certificate</h2>
+
       <input
         type="text"
         placeholder="Enter Roll Number"
         value={rollNumber}
         onChange={(e) => setRollNumber(e.target.value)}
-        className="w-full p-2 mb-3 border rounded"
+        className="input-field"
       />
-      <button onClick={fetchCertificate} className="bg-blue-600 text-white px-4 py-2 rounded">
-        Search
+
+      <button onClick={fetchCertificate} className="search-button">
+        🔍 Search
       </button>
 
-      {error && <p className="mt-3 text-red-500">{error}</p>}
+      {error && <p className="error-message">{error}</p>}
 
       {certificate && (
-        <div className="mt-4">
-          <p><strong>Name:</strong> {certificate.name}</p>
-          <p><strong>Course:</strong> {certificate.course}</p>
-          <p><strong>Completion Date:</strong> {certificate.completionDate}</p>
-          <p><strong>Certificate:</strong></p>
+        <div className="certificate-card">
+          <p className='text-dark'><strong> Name:</strong> {certificate.name}</p>
+          <p className='text-dark'><strong> Course:</strong> {certificate.course}</p>
+          <p className='text-dark'><strong>Completion Date:</strong> {new Date(certificate.completionDate).toLocaleDateString('en-GB', {
+  day: '2-digit',
+  month: 'short',
+  year: 'numeric',
+})}</p>
+          <p className='text-dark'><strong>Certificate:</strong></p>
+
           {certificate.certificateUrl.endsWith('.pdf') ? (
-            <a href={`https://entangen.onrender.com${certificate.certificateUrl}`} target="_blank" rel="noreferrer" className="text-blue-600 underline">View PDF</a>
+            <a
+              href={`https://entangen.onrender.com${certificate.certificateUrl}`}
+              target="_blank"
+              rel="noreferrer"
+              className="view-btn1"
+            >
+              View Full Certificate
+            </a>
           ) : (
-            <img src={`https://entangen.onrender.com${certificate.certificateUrl}`} alt="Certificate" className="w-full mt-2 border" />
+            <>
+              <img
+                src={`https://entangen.onrender.com${certificate.certificateUrl}`}
+                alt="Certificate"
+                className="certificate-image"
+              />
+              <a
+                href={`https://entangen.onrender.com${certificate.certificateUrl}`}
+                target="_blank"
+                rel="noreferrer"
+                className="view-btn1"
+              >
+                View Full Certificate
+              </a>
+            </>
           )}
         </div>
       )}

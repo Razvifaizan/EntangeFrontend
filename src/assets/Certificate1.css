@@ -1,0 +1,108 @@
+.certificate-container {
+    max-width: 500px;
+    margin: 50px auto;
+    padding: 2rem;
+    background: linear-gradient(to right, #f0f8ff, #e6f0ff);
+    border-radius: 20px;
+    box-shadow: 0 0 20px rgba(0, 102, 255, 0.2);
+    transition: all 0.3s ease;
+}
+
+.title {
+    text-align: center;
+    font-size: 1.8rem;
+    font-weight: bold;
+    color: #003366;
+    margin-bottom: 1.5rem;
+}
+
+.input-field {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 15px;
+    border: 2px solid #cce0ff;
+    border-radius: 10px;
+    font-size: 1rem;
+    outline: none;
+    transition: border-color 0.3s ease;
+}
+
+.input-field:focus {
+    border-color: #3399ff;
+}
+
+.search-button {
+    width: 100%;
+    padding: 12px;
+    background: #007bff;
+    color: white;
+    border: none;
+    font-size: 1rem;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.search-button:hover {
+    background: #0056b3;
+}
+
+.error-message {
+    color: red;
+    margin-top: 10px;
+    font-weight: bold;
+}
+
+.certificate-card {
+    margin-top: 25px;
+    padding: 1rem;
+    background: #ffffff;
+    border-radius: 15px;
+    box-shadow: 0 0 15px rgba(0, 102, 255, 0.1);
+    animation: fadeIn 0.5s ease-in-out;
+}
+
+.certificate-image {
+    width: 100%;
+    margin-top: 10px;
+    border-radius: 10px;
+    border: 2px solid #e0e0e0;
+    transition: transform 0.3s ease;
+}
+
+.certificate-image:hover {
+    transform: scale(1.02);
+}
+
+.view-btn1 {
+    display: inline-block;
+    margin-top: 12px;
+    padding: 10px 20px;
+    background-color: #28a745;
+    color: white;
+    border-radius: 10px;
+    text-decoration: none;
+    font-weight: bold;
+    transition: background 0.3s ease, transform 0.3s ease;
+}
+
+.view-btn1:hover {
+    background-color: #218838;
+    transform: scale(1.05);
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(25px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+p{
+    color: black;
+}
