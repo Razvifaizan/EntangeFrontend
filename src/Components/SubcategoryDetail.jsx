@@ -15,7 +15,7 @@ const SubcategoryDetail = () => {
   useEffect(() => {
     const fetchSubcategory = async () => {
       try {
-        const res = await axios.get(`https://entangen.onrender.com/api/getsubCaterory/${id}`);
+        const res = await axios.get(`https://entangen-api.onrender.com/api/getsubCaterory/${id}`);
         setSubcategory(res.data);
       } catch (err) {
         console.error("Failed to fetch subcategory details", err);
@@ -48,7 +48,7 @@ const SubcategoryDetail = () => {
                 <div className="card p-4 shadow-lg subcat-card">
                   <div className="text-center mb-4">
                     <img
-                      src={`https://entangen.onrender.com/${subcategory.image}`}
+                      src={`${subcategory.image}`}
                       alt={subcategory.name}
                       className="img-fluid subcat-image"
                       style={{ width: '190px', objectFit: 'contain' }}

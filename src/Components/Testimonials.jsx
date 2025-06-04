@@ -9,7 +9,7 @@ const Testimonials = () => {
 
   const fetchTestimonials = async () => {
     try {
-      const response = await axios.get("https://entangen.onrender.com/testimonial/getTeatimonial");
+      const response = await axios.get("https://entangen-api.onrender.com/testimonial/getTeatimonial");
       setTestimonials(response.data);
     } catch (error) {
       console.error("Error fetching testimonials:", error);
@@ -55,7 +55,7 @@ const Testimonials = () => {
                 {visibleTestimonials.map((t, i) => (
                   <div className="testimonial-card" key={t._id || i}>
                     <img
-                      src={`https://entangen.onrender.com/${t.image}`}
+                      src={`${t.image}`}
                       alt={t.name}
                       className="testimonial-image"
                     />

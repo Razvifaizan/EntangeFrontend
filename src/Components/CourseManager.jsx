@@ -25,7 +25,7 @@ const [subTopicVideoUrl, setSubTopicVideoUrl] = useState('');
 
   const loadCourselist = async () => {
     try {
-      const response = await axios.get('https://entangen.onrender.com/api/courses');
+      const response = await axios.get('https://entangen-api.onrender.com/api/courses');
       setCourses(response.data);
     } catch (error) {
       console.error("Error fetching course list:", error);
@@ -39,7 +39,7 @@ const [subTopicVideoUrl, setSubTopicVideoUrl] = useState('');
     formData.append('image', courseImage);
 
     try {
-      await axios.post('https://entangen.onrender.com/api/course', formData);
+      await axios.post('https://entangen-api.onrender.com/api/course', formData);
       alert("Course Added");
       setCourseName('');
       setCourseImage(null);
@@ -54,7 +54,7 @@ const [subTopicVideoUrl, setSubTopicVideoUrl] = useState('');
     if (!selectedTopicId) return alert("Select a topic");
   
     try {
-      await axios.post(`https://entangen.onrender.com/api/topic/${selectedTopicId}/subtopic`, {
+      await axios.post(`https://entangen-api.onrender.com/api/topic/${selectedTopicId}/subtopic`, {
         title: subTopicTitle,
         videoUrl: subTopicVideoUrl
       });
@@ -79,7 +79,7 @@ const [subTopicVideoUrl, setSubTopicVideoUrl] = useState('');
     formData.append('duration', duration);
 
     try {
-      await axios.post('https://entangen.onrender.com/api/subcategory', formData);
+      await axios.post('https://entangen-api.onrender.com/api/subcategory', formData);
       alert("Subcategory Added");
       setSubcategoryName('');
       setSubcategoryImage(null);
@@ -96,7 +96,7 @@ const [subTopicVideoUrl, setSubTopicVideoUrl] = useState('');
     if (!selectedSubcategoryId) return alert("Select a subcategory");
 
     try {
-      await axios.post(`https://entangen.onrender.com/api/addTopic/${selectedSubcategoryId}`, {
+      await axios.post(`https://entangen-api.onrender.com/api/addTopic/${selectedSubcategoryId}`, {
         title: topicTitle,
         videoUrl
       });

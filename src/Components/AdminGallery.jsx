@@ -13,7 +13,7 @@ const AdminGallery = () => {
 
   const fetchMedia = async () => {
     try {
-      const res = await axios.get("https://entangen.onrender.com/media/getMedia");
+      const res = await axios.get("https://entangen-api.onrender.com/media/getMedia");
       setMediaList(res.data);
     } catch (err) {
       console.error("Error fetching media", err);
@@ -24,10 +24,10 @@ const AdminGallery = () => {
     const formData = new FormData();
     formData.append("name", newMedia.name);
     formData.append("type", newMedia.type);
-    formData.append("image", newMedia.file); // match backend multer field name
+    formData.append("image", newMedia.file); 
 
     try {
-      await axios.post("https://entangen.onrender.com/media/addMedia", formData);
+      await axios.post("https://entangen-api.onrender.com/media/addMedia", formData);
       fetchMedia();
       setNewMedia({ name: "", type: "photo", file: null });
     } catch (err) {
@@ -37,7 +37,7 @@ const AdminGallery = () => {
 
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`https://entangen.onrender.com/media/deletMedia/${id}`);
+      await axios.delete(`https://entangen-api.onrender.com/media/deletMedia/${id}`);
       fetchMedia();
     } catch (err) {
       console.error("Delete error", err);
@@ -112,12 +112,12 @@ const AdminGallery = () => {
             <div className="card shadow-sm p-3">
               {item.type === "photo" ? (
                 <img
-                  src={`https://entangen.onrender.com/${item.media}`}
+                  src={`${item.media}`}
                   alt={item.name}
                   className="img-fluid"
                 />
               ) : (
-                <video controls src={`https://entangen.onrender.com/${item.media}`} className="w-100" />
+                <video controls src={`${item.media}`} className="w-100" />
               )}
               <h6 className="mt-2">{item.name}</h6>
               <div className="d-flex justify-content-between mt-2">

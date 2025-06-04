@@ -13,7 +13,7 @@ const TopicDetail = () => {
   useEffect(() => {
     const fetchTopic = async () => {
       try {
-        const res = await axios.get(`https://entangen.onrender.com/api/topic/${topicId}`);
+        const res = await axios.get(`https://entangen-api.onrender.com/api/topic/${topicId}`);
         setTopic(res.data);
       } catch (err) {
         console.error("Failed to fetch topic", err);

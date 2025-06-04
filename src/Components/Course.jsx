@@ -16,7 +16,7 @@ const Course = () => {
 
   const loadCourses = async () => {
     try {
-      const res = await axios.get("https://entangen.onrender.com/api/courses");
+      const res = await axios.get("https://entangen-api.onrender.com/api/courses");
       setCourse(res.data);
     } catch (err) {
       console.error("Error fetching courses:", err);
@@ -105,7 +105,7 @@ const Course = () => {
     <div className="animated-border-card">
       <div className="inner-card text-center">
         <img
-          src={`https://entangen.onrender.com/${sub.image}`}
+          src={`https://entangen-api.onrender.com/${sub.image}`}
           alt={sub.name}
           className="card-img-top"
           style={{

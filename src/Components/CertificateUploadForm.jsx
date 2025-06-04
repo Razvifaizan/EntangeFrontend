@@ -19,7 +19,7 @@ const CertificateUploadForm = () => {
 
   const certificateLoad = async () => {
     try {
-      const res = await axios.get("https://entangen.onrender.com/Certificate/getAllCertificate");
+      const res = await axios.get("https://entangen-api.onrender.com/Certificate/getAllCertificate");
       setCertificate(res.data);
     } catch (error) {
       console.log(error);
@@ -28,7 +28,7 @@ const CertificateUploadForm = () => {
 
   const certificateDelet = async (id) => {
     try {
-      await axios.delete(`https://entangen.onrender.com/Certificate/deletCertificate/${id}`);
+      await axios.delete(`https://entangen-api.onrender.com/Certificate/deletCertificate/${id}`);
       certificateLoad();
     } catch (err) {
       console.log(err);
@@ -53,7 +53,7 @@ const CertificateUploadForm = () => {
     data.append('certificateFile', formData.certificateFile);
 
     try {
-      await axios.post('https://entangen.onrender.com/certificate/add', data);
+      await axios.post('https://entangen-api.onrender.com/certificate/add', data);
       setMessage('Certificate uploaded successfully!');
       setFormData({
         rollNumber: '',
@@ -91,7 +91,7 @@ const CertificateUploadForm = () => {
     }
 
     try {
-      await axios.put(`https://entangen.onrender.com/Certificate/certificate/${editData._id}`, data);
+      await axios.put(`https://entangen-api.onrender.com/Certificate/certificate/${editData._id}`, data);
       setEditData(null);
       setFormData({
         rollNumber: '',
@@ -136,7 +136,7 @@ const CertificateUploadForm = () => {
         {certificate.map(c => (
           <div className="col-md-4 mb-4" key={c._id}>
             <div className="card">
-              <img src={`https://entangen.onrender.com${c.certificateUrl}`} className="card-img-top" alt="Certificate" style={{ height: '250px' }} />
+              <img src={`${c.certificateUrl}`} className="card-img-top" alt="Certificate" style={{ height: '250px' }} />
               <div className="card-body">
                 <h5 className="card-title">Name: {c.name}</h5>
                 <p className="card-text">Roll No: {c.rollNumber}</p>
