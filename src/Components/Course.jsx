@@ -105,7 +105,7 @@ const Course = () => {
     <div className="animated-border-card">
       <div className="inner-card text-center">
         <img
-          src={`https://entangen-api.onrender.com/${sub.image}`}
+          src={`${sub.image}`}
           alt={sub.name}
           className="card-img-top"
           style={{

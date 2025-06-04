@@ -40,9 +40,9 @@ const AdminCourseTable = () => {
     setOpenRows((prev) => ({ ...prev, [id]: !prev[id] }));
   };
 
-  const handleDelete = async (url, confirmMsg) => {
+  const handleDelete = async (id, confirmMsg) => {
     if (window.confirm(confirmMsg)) {
-      await axios.delete(url);
+      await axios.delete(`https://entangen-api.onrender.com/${id}`);
       loadCourses();
     }
   };
@@ -63,7 +63,7 @@ const AdminCourseTable = () => {
 
   const handleUpdate = async () => {
     try {
-      const endpoint = editType === 'course' ? `course/${editData._id}` : `subcategory/${editData._id}`;
+      const endpoint = editType === 'course' ? `https://entangen-api.onrender.com/api/course/${editData._id}` : `https://entangen-api.onrender.com/api/subcategory/${editData._id}`;
       let payload;
 
       if (editType === 'subcategory' && editData.imageFile) {
@@ -74,7 +74,7 @@ const AdminCourseTable = () => {
         payload.append('image', editData.imageFile);
       }
 
-      await axios.put(`api/${endpoint}`, payload || editData, {
+      await axios.put(endpoint, payload || editData, {
         headers: payload ? { 'Content-Type': 'multipart/form-data' } : undefined,
       });
 
@@ -88,7 +88,7 @@ const AdminCourseTable = () => {
 
   const handleTopicUpdate = async () => {
     try {
-      await axios.put(`api/topicUpdate/${topicsModal.topic._id}`, topicsModal.topic);
+      await axios.put(`https://entangen-api.onrender.com/api/topicUpdate/${topicsModal.topic._id}`, topicsModal.topic);
       setTopicsModal({ show: false, topic: null });
       loadCourses();
     } catch (err) {
@@ -99,7 +99,7 @@ const AdminCourseTable = () => {
   const handleSubtopicUpdate = async () => {
     try {
       const { topicId, _id, title } = subtopicModal.subtopic;
-      await axios.put(`api/topic/${topicId}/subtopic/${_id}`, { title });
+      await axios.put(`https://entangen-api.onrender.com/api/topic/${topicId}/subtopic/${_id}`, { title });
       setSubtopicModal({ show: false, subtopic: null });
       loadCourses();
     } catch (err) {
@@ -270,25 +270,20 @@ const AdminCourseTable = () => {
           <Modal.Title>Edit Topic</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <Form>
-            <Form.Group>
-              <Form.Label>Title</Form.Label>
-              <Form.Control
-                type="text"
-                value={topicsModal.topic?.title || ''}
-                onChange={(e) =>
-                  setTopicsModal((prev) => ({
-                    ...prev,
-                    topic: { ...prev.topic, title: e.target.value },
-                  }))
-                }
-              />
-            </Form.Group>
-          </Form>
+          <Form.Group className="mb-3">
+            <Form.Label>Title</Form.Label>
+            <Form.Control
+              type="text"
+              value={topicsModal.topic?.title || ''}
+              onChange={(e) =>
+                setTopicsModal({ ...topicsModal, topic: { ...topicsModal.topic, title: e.target.value } })
+              }
+            />
+          </Form.Group>
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={() => setTopicsModal({ show: false, topic: null })}>Cancel</Button>
-          <Button variant="primary" onClick={handleTopicUpdate}>Save</Button>
+          <Button variant="primary" onClick={handleTopicUpdate}>Save Changes</Button>
         </Modal.Footer>
       </Modal>
 
@@ -298,25 +293,23 @@ const AdminCourseTable = () => {
           <Modal.Title>Edit Subtopic</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <Form>
-            <Form.Group>
-              <Form.Label>Title</Form.Label>
-              <Form.Control
-                type="text"
-                value={subtopicModal.subtopic?.title || ''}
-                onChange={(e) =>
-                  setSubtopicModal((prev) => ({
-                    ...prev,
-                    subtopic: { ...prev.subtopic, title: e.target.value },
-                  }))
-                }
-              />
-            </Form.Group>
-          </Form>
+          <Form.Group className="mb-3">
+            <Form.Label>Title</Form.Label>
+            <Form.Control
+              type="text"
+              value={subtopicModal.subtopic?.title || ''}
+              onChange={(e) =>
+                setSubtopicModal({
+                  ...subtopicModal,
+                  subtopic: { ...subtopicModal.subtopic, title: e.target.value },
+                })
+              }
+            />
+          </Form.Group>
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={() => setSubtopicModal({ show: false, subtopic: null })}>Cancel</Button>
-          <Button variant="primary" onClick={handleSubtopicUpdate}>Save</Button>
+          <Button variant="primary" onClick={handleSubtopicUpdate}>Save Changes</Button>
         </Modal.Footer>
       </Modal>
     </div>
