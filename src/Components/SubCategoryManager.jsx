@@ -27,7 +27,7 @@ const AdminCourseTable = () => {
   const loadCourses = async () => {
     try {
       setLoading(true);
-      const res = await axios.get('api/courses');
+      const res = await axios.get('https://entangen-api.onrender.com/api/courses');
       setCourses(res.data);
     } catch (err) {
       console.error('Error fetching courses:', err);
@@ -40,37 +40,10 @@ const AdminCourseTable = () => {
     setOpenRows((prev) => ({ ...prev, [id]: !prev[id] }));
   };
 
-  const handleDeleteCourse = async (id) => {
-    if (window.confirm('Delete this course?')) {
-      await axios.delete(`api/course/${id}`);
+  const handleDelete = async (url, confirmMsg) => {
+    if (window.confirm(confirmMsg)) {
+      await axios.delete(url);
       loadCourses();
-    }
-  };
-
-  const handleDeleteSubcategory = async (subId) => {
-    if (window.confirm('Delete this subcategory?')) {
-      await axios.delete(`api/subcategory/${subId}`);
-      loadCourses();
-    }
-  };
-
-  const handleDeleteTopic = async (topicId) => {
-    if (window.confirm('Delete this topic?')) {
-      await axios.delete(`api/topicDeleate/${topicId}`);
-      loadCourses();
-    }
-  };
-
-  const handleDeleteSubtopic = async (topicId, subtopicId) => {
-    if (window.confirm('Delete this subtopic?')) {
-      try {
-        await axios.delete(
-          `api/topic/${topicId}/subtopic/${subtopicId}`
-        );
-        loadCourses();
-      } catch (error) {
-        console.error('Error deleting subtopic:', error);
-      }
     }
   };
 
@@ -91,27 +64,22 @@ const AdminCourseTable = () => {
   const handleUpdate = async () => {
     try {
       const endpoint = editType === 'course' ? `course/${editData._id}` : `subcategory/${editData._id}`;
+      let payload;
 
-      let formData;
       if (editType === 'subcategory' && editData.imageFile) {
-        formData = new FormData();
-        formData.append('name', editData.name);
-        formData.append('description', editData.description);
-        formData.append('duration', editData.duration);
-        formData.append('image', editData.imageFile);
+        payload = new FormData();
+        payload.append('name', editData.name);
+        payload.append('description', editData.description);
+        payload.append('duration', editData.duration);
+        payload.append('image', editData.imageFile);
       }
 
-      await axios.put(
-        `api/${endpoint}`,
-        formData || editData,
-        {
-          headers: formData
-            ? { 'Content-Type': 'multipart/form-data' }
-            : { 'Content-Type': 'application/json' }
-        }
-      );
+      await axios.put(`api/${endpoint}`, payload || editData, {
+        headers: payload ? { 'Content-Type': 'multipart/form-data' } : undefined,
+      });
 
       setShowModal(false);
+      setEditData({});
       loadCourses();
     } catch (err) {
       console.error('Error updating:', err);
@@ -131,9 +99,7 @@ const AdminCourseTable = () => {
   const handleSubtopicUpdate = async () => {
     try {
       const { topicId, _id, title } = subtopicModal.subtopic;
-      await axios.put(`api/topic/${topicId}/subtopic/${_id}`, {
-        title,
-      });
+      await axios.put(`api/topic/${topicId}/subtopic/${_id}`, { title });
       setSubtopicModal({ show: false, subtopic: null });
       loadCourses();
     } catch (err) {
@@ -178,7 +144,7 @@ const AdminCourseTable = () => {
                     <Button variant="outline-warning" size="sm" className="me-2" onClick={() => handleEdit('course', course)}>
                       ✏️ Update
                     </Button>
-                    <Button variant="outline-danger" size="sm" onClick={() => handleDeleteCourse(course._id)}>
+                    <Button variant="outline-danger" size="sm" onClick={() => handleDelete(`api/course/${course._id}`, 'Delete this course?')}>
                       🗑️ Delete
                     </Button>
                   </td>
@@ -198,58 +164,40 @@ const AdminCourseTable = () => {
                           </thead>
                           <tbody>
                             {course.subcategories.map((sub) => (
-                              <React.Fragment key={sub._id}>
-                                <tr>
-                                  <td>
-                                    <img src={`${sub.image}`} alt={sub.name} width="60" height="40" className="rounded shadow-sm" />
-                                  </td>
-                                  <td className="fw-medium">{sub.name}</td>
-                                  <td>
-                                    <ul className="list-group">
-                                      {sub.topics.map((topic, idx) => (
-                                        <li key={topic._id} className="list-group-item d-flex justify-content-between align-items-start">
-                                          <div className="ms-2 me-auto">
-                                            <div className="fw-bold text-primary">{idx + 1}. {topic.title}</div>
-                                            {topic.subtopics && topic.subtopics.length > 0 && (
-                                              <ul className="list-group mt-2">
-                                                {topic.subtopics.map((subtopic, subIdx) => (
-                                                  <li key={subtopic._id} className="list-group-item d-flex justify-content-between align-items-center">
-                                                    <div>{subIdx + 1}. {subtopic.title}</div>
-                                                    <div className='ms-4'>
-                                                      <Button variant="outline-primary" size="sm" className="me-2" onClick={() => handleEditSubtopic({ ...subtopic, topicId: topic._id })}>
-                                                        ✏️
-                                                      </Button>
-                                                      <Button variant="outline-danger" size="sm" onClick={() => handleDeleteSubtopic(topic._id, subtopic._id)}>
-                                                        🗑️
-                                                      </Button>
-                                                    </div>
-                                                  </li>
-                                                ))}
-                                              </ul>
-                                            )}
-                                          </div>
-                                          <div>
-                                            <Button variant="outline-primary" size="sm" className="me-2" onClick={() => handleEditTopic(topic)}>
-                                              ✏️
-                                            </Button>
-                                            <Button variant="outline-danger" size="sm" onClick={() => handleDeleteTopic(topic._id)}>
-                                              🗑️
-                                            </Button>
-                                          </div>
-                                        </li>
-                                      ))}
-                                    </ul>
-                                  </td>
-                                  <td>
-                                    <Button variant="outline-primary" size="sm" className="me-2" onClick={() => handleEdit('subcategory', sub)}>
-                                      ✏️ Update
-                                    </Button>
-                                    <Button variant="outline-danger" size="sm" onClick={() => handleDeleteSubcategory(sub._id)}>
-                                      🗑️ Delete
-                                    </Button>
-                                  </td>
-                                </tr>
-                              </React.Fragment>
+                              <tr key={sub._id}>
+                                <td>
+                                  <img src={sub.image} alt={sub.name} width="60" height="40" className="rounded shadow-sm" />
+                                </td>
+                                <td className="fw-medium">{sub.name}</td>
+                                <td>
+                                  <ul className="list-group">
+                                    {sub.topics.map((topic, idx) => (
+                                      <li key={topic._id} className="list-group-item d-flex justify-content-between align-items-start">
+                                        <div className="ms-2 me-auto">
+                                          <div className="fw-bold text-primary">{idx + 1}. {topic.title}</div>
+                                          {topic.subtopics?.map((subtopic, subIdx) => (
+                                            <li key={subtopic._id} className="list-group-item d-flex justify-content-between align-items-center">
+                                              <div>{subIdx + 1}. {subtopic.title}</div>
+                                              <div className='ms-4'>
+                                                <Button variant="outline-primary" size="sm" className="me-2" onClick={() => handleEditSubtopic({ ...subtopic, topicId: topic._id })}>✏️</Button>
+                                                <Button variant="outline-danger" size="sm" onClick={() => handleDelete(`api/topic/${topic._id}/subtopic/${subtopic._id}`, 'Delete this subtopic?')}>🗑️</Button>
+                                              </div>
+                                            </li>
+                                          ))}
+                                        </div>
+                                        <div>
+                                          <Button variant="outline-primary" size="sm" className="me-2" onClick={() => handleEditTopic(topic)}>✏️</Button>
+                                          <Button variant="outline-danger" size="sm" onClick={() => handleDelete(`api/topicDeleate/${topic._id}`, 'Delete this topic?')}>🗑️</Button>
+                                        </div>
+                                      </li>
+                                    ))}
+                                  </ul>
+                                </td>
+                                <td>
+                                  <Button variant="outline-primary" size="sm" className="me-2" onClick={() => handleEdit('subcategory', sub)}>✏️ Update</Button>
+                                  <Button variant="outline-danger" size="sm" onClick={() => handleDelete(`api/subcategory/${sub._id}`, 'Delete this subcategory?')}>🗑️ Delete</Button>
+                                </td>
+                              </tr>
                             ))}
                           </tbody>
                         </Table>
@@ -263,7 +211,7 @@ const AdminCourseTable = () => {
         </Table>
       )}
 
-      {/* Course / Subcategory Modal */}
+      {/* Course / Subcategory Edit Modal */}
       <Modal show={showModal} onHide={() => setShowModal(false)} centered>
         <Modal.Header closeButton>
           <Modal.Title>Update {editType === 'course' ? 'Course' : 'Subcategory'}</Modal.Title>
@@ -287,30 +235,23 @@ const AdminCourseTable = () => {
                     as="textarea"
                     rows={2}
                     value={editData.description || ''}
-                    onChange={(e) =>
-                      setEditData({ ...editData, description: e.target.value })
-                    }
+                    onChange={(e) => setEditData({ ...editData, description: e.target.value })}
                   />
                 </Form.Group>
-
                 <Form.Group className="mb-3">
                   <Form.Label>Duration</Form.Label>
                   <Form.Control
                     type="text"
                     value={editData.duration || ''}
-                    onChange={(e) =>
-                      setEditData({ ...editData, duration: e.target.value })
-                    }
+                    onChange={(e) => setEditData({ ...editData, duration: e.target.value })}
                   />
                 </Form.Group>
-
                 <Form.Group className="mb-3">
                   <Form.Label>Image</Form.Label>
                   <Form.Control
                     type="file"
-                    onChange={(e) =>
-                      setEditData({ ...editData, imageFile: e.target.files[0] })
-                    }
+                    accept="image/*"
+                    onChange={(e) => setEditData({ ...editData, imageFile: e.target.files[0] })}
                   />
                 </Form.Group>
               </>
@@ -318,102 +259,64 @@ const AdminCourseTable = () => {
           </Form>
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="outline-secondary" onClick={() => setShowModal(false)}>Cancel</Button>
+          <Button variant="secondary" onClick={() => setShowModal(false)}>Cancel</Button>
           <Button variant="primary" onClick={handleUpdate}>Save Changes</Button>
         </Modal.Footer>
       </Modal>
 
-      {/* Topic Modal */}
+      {/* Topic Edit Modal */}
       <Modal show={topicsModal.show} onHide={() => setTopicsModal({ show: false, topic: null })} centered>
         <Modal.Header closeButton>
           <Modal.Title>Edit Topic</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          {topicsModal.topic && (
-            <Form>
-              <Form.Group className="mb-3">
-                <Form.Label>Title</Form.Label>
-                <Form.Control
-                  type="text"
-                  value={topicsModal.topic.title}
-                  onChange={(e) =>
-                    setTopicsModal({
-                      ...topicsModal,
-                      topic: { ...topicsModal.topic, title: e.target.value }
-                    })
-                  }
-                />
-              </Form.Group>
-              {/* <Form.Group className="mb-3">
-                <Form.Label>Description</Form.Label>
-                <Form.Control
-                  as="textarea"
-                  value={topicsModal.topic.description || ''}
-                  onChange={(e) =>
-                    setTopicsModal({
-                      ...topicsModal,
-                      topic: { ...topicsModal.topic, description: e.target.value }
-                    })
-                  }
-                />
-              </Form.Group> */}
-              {/* <Form.Group className="mb-3">
-                <Form.Label>Duration</Form.Label>
-                <Form.Control
-                  type="text"
-                  value={topicsModal.topic.duration || ''}
-                  onChange={(e) =>
-                    setTopicsModal({
-                      ...topicsModal,
-                      topic: { ...topicsModal.topic, duration: e.target.value }
-                    })
-                  }
-                />
-              </Form.Group> */}
-            </Form>
-          )}
+          <Form>
+            <Form.Group>
+              <Form.Label>Title</Form.Label>
+              <Form.Control
+                type="text"
+                value={topicsModal.topic?.title || ''}
+                onChange={(e) =>
+                  setTopicsModal((prev) => ({
+                    ...prev,
+                    topic: { ...prev.topic, title: e.target.value },
+                  }))
+                }
+              />
+            </Form.Group>
+          </Form>
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="outline-secondary" onClick={() => setTopicsModal({ show: false, topic: null })}>
-            Cancel
-          </Button>
-          <Button variant="success" onClick={handleTopicUpdate}>
-            Save Topic
-          </Button>
+          <Button variant="secondary" onClick={() => setTopicsModal({ show: false, topic: null })}>Cancel</Button>
+          <Button variant="primary" onClick={handleTopicUpdate}>Save</Button>
         </Modal.Footer>
       </Modal>
 
-      {/* Subtopic Modal */}
+      {/* Subtopic Edit Modal */}
       <Modal show={subtopicModal.show} onHide={() => setSubtopicModal({ show: false, subtopic: null })} centered>
         <Modal.Header closeButton>
           <Modal.Title>Edit Subtopic</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          {subtopicModal.subtopic && (
-            <Form>
-              <Form.Group className="mb-3">
-                <Form.Label>Title</Form.Label>
-                <Form.Control
-                  type="text"
-                  value={subtopicModal.subtopic.title}
-                  onChange={(e) =>
-                    setSubtopicModal({
-                      ...subtopicModal,
-                      subtopic: { ...subtopicModal.subtopic, title: e.target.value }
-                    })
-                  }
-                />
-              </Form.Group>
-            </Form>
-          )}
+          <Form>
+            <Form.Group>
+              <Form.Label>Title</Form.Label>
+              <Form.Control
+                type="text"
+                value={subtopicModal.subtopic?.title || ''}
+                onChange={(e) =>
+                  setSubtopicModal((prev) => ({
+                    ...prev,
+                    subtopic: { ...prev.subtopic, title: e.target.value },
+                  }))
+                }
+              />
+            </Form.Group>
+          </Form>
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="outline-secondary" onClick={() => setSubtopicModal({ show: false, subtopic: null })}>
-            Cancel
-          </Button>
-          <Button variant="success" onClick={handleSubtopicUpdate}>
-            Save Subtopic
-          </Button>
+          <Button variant="secondary" onClick={() => setSubtopicModal({ show: false, subtopic: null })}>Cancel</Button>
+          <Button variant="primary" onClick={handleSubtopicUpdate}>Save</Button>
         </Modal.Footer>
       </Modal>
     </div>
