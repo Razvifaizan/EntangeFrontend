@@ -5,6 +5,7 @@ import AdminLogin from './Components/AdminLogin';
 import ProtectedAdminRoute from './Components/ProtectedAdminRoute';
 import SubcategoryDetail from './Components/SubcategoryDetail';
 import TopicDetail from './Components/TopicDetail';
+import CourseDetailPage from './Components/CourseDetailPage';
 
 function App() {
   return (
@@ -24,6 +25,7 @@ function App() {
 
         <Route path="/subcategory/:id" element={<SubcategoryDetail />} />
         <Route path="/topic/:topicId" element={<TopicDetail />} />
+        <Route path="/courses/:id" element={<CourseDetailPage />} />
       </Routes>
     </>
   );
