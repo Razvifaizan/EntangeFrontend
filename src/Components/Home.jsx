@@ -9,6 +9,7 @@ import Testimonials from "./Testimonials.jsx";
 import Footer from "./Footer.jsx";
 // import Certificate from "../../../backend/models/Certificate.js";
 import CertificateChecker from "./CertificateViewer.jsx";
+import TieupCompanies from "./TieupCompanies.jsx";
 
 const Home = () => {
   const location = useLocation();
@@ -42,6 +43,10 @@ const Home = () => {
     <Testimonials />
   </section>
 
+  <section id="TieupCompanies">
+    <TieupCompanies/>
+  </section>
+
 
    <section id="ContactUs">
     <ContactUs />
@@ -53,6 +58,8 @@ const Home = () => {
   <section id="ContactUs">
     <Footer />
   </section>
+
+  
 
 </>)
 };

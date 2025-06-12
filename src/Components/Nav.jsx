@@ -10,8 +10,10 @@ function Nav() {
     {id : "hero",  lable:"Home"},
     {id : "courses",  lable:"Courses"},
     {id : "gallery",  lable:"Gallery"},
-    {id : "OurStudent",  lable:"Our Students"},
+    {id : "OurStudent",  lable:"Placement"},
+    {id : "TieupCompanies",  lable:"Tie-up Companies"},
     {id : "ContactUs",  lable:"Contact Us"},
+    
 
     // Our Students
   ]

@@ -1,0 +1,45 @@
+.tieup-section {
+  padding: 50px 20px;
+  background: #020202;
+  text-align: center;
+}
+
+.tieup-title {
+  font-size: 42px;
+  font-weight: bold;
+  color: #42fff6;
+  margin-bottom: 40px;
+}
+
+.company-grid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 30px;
+}
+
+.company-card {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+  padding: 20px;
+  width: 150px;
+  transition: transform 0.3s ease;
+}
+
+.company-card:hover {
+  transform: translateY(-5px);
+}
+.company-card:hover .company-logo {
+  scale: 1.2;
+}
+.company-card:hover .tieup-title {
+  color: red;
+}
+
+.company-logo {
+  width: 80px;
+  height: 80px;
+  object-fit: contain;
+  margin-bottom: 10px;
+}
