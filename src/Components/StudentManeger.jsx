@@ -1,23 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import '../assets/Style/Student.css';
-// import '@fortawesome/fontawesome-free/css/all.min.css';
 import TestimonialForm from './TestimonialForm';
 
 const StudentManeger = () => {
   const [testimonials, setTestimonials] = useState([]);
   const [editTestimonial, setEditTestimonial] = useState(null);
-  const [formData, setFormData] = useState({
-    name: '',
-    rating: 0,
-    review: '',
-    image: null,
-    hover: 0
-  });
 
   const fetchTestimonials = async () => {
     try {
-      const response = await axios.get('https://entangen-api.onrender.com/testimonial/getTeatimonial');
+      const response = await axios.get(
+        'https://entangen-api.onrender.com/testimonial/getTeatimonial'
+      );
       setTestimonials(response.data);
     } catch (error) {
       console.error('Error fetching testimonials:', error);
@@ -26,146 +20,128 @@ const StudentManeger = () => {
 
   const deleteTestimonial = async (id) => {
     try {
-      await axios.delete(`https://entangen-api.onrender.com/testimonial/deletTeatimonial/${id}`);
+      await axios.delete(
+        `https://entangen-api.onrender.com/testimonial/deletTeatimonial/${id}`
+      );
       fetchTestimonials();
     } catch (error) {
       console.error('Error deleting testimonial:', error);
     }
   };
 
-  const handleFormChange = (e) => {
+  const handleEditChange = (e) => {
     const { name, value, files } = e.target;
     if (name === 'image') {
-      setFormData({ ...formData, image: files[0] });
+      setEditTestimonial({ ...editTestimonial, image: files[0] });
     } else {
-      setFormData({ ...formData, [name]: value });
+      setEditTestimonial({ ...editTestimonial, [name]: value });
     }
   };
 
-  const handleEditClick = (testimonial) => {
-    setEditTestimonial(testimonial._id);
-    setFormData({
-      name: testimonial.name || '',
-      rating: testimonial.rating || 0,
-      review: testimonial.review || '',
-      image: null,
-      hover: 0
-    });
-  };
-
-  const handleFormSubmit = async (e, id) => {
+  const handleUpdate = async (e) => {
     e.preventDefault();
-    const updatedData = new FormData();
-    updatedData.append('name', formData.name);
-    updatedData.append('rating', formData.rating);
-    updatedData.append('review', formData.review);
-    if (formData.image) updatedData.append('image', formData.image);
+    const formData = new FormData();
+    formData.append('name', editTestimonial.name);
+    formData.append('company', editTestimonial.company);
+    formData.append('package', editTestimonial.package);
+    if (editTestimonial.image instanceof File) {
+      formData.append('image', editTestimonial.image);
+    }
 
     try {
-      await axios.put(`https://entangen-api.onrender.com/testimonial/updateTeatimonial/${id}`, updatedData);
+      await axios.put(
+        `https://entangen-api.onrender.com/testimonial/updateTeatimonial/${editTestimonial._id}`,
+        formData
+      );
       setEditTestimonial(null);
-      setFormData({ name: '', rating: 0, review: '', image: null, hover: 0 });
       fetchTestimonials();
     } catch (error) {
       console.error('Error updating testimonial:', error);
     }
   };
 
-  const renderStars = (rating) => {
-    return [...Array(5)].map((_, i) => (
-      <i
-        key={i}
-        className={`fas fa-star`}
-        style={{
-          color: i < rating ? '#FFD700' : '#ccc',
-          marginRight: '5px'
-        }}
-      ></i>
-    ));
-  };
-
-  const renderInteractiveStars = () => {
-    return [...Array(5)].map((_, i) => (
-      <i
-        key={i}
-        className="fas fa-star"
-        onClick={() => setFormData({ ...formData, rating: i + 1 })}
-        onMouseEnter={() => setFormData({ ...formData, hover: i + 1 })}
-        onMouseLeave={() => setFormData({ ...formData, hover: 0 })}
-        style={{
-          color: i < (formData.hover || formData.rating) ? '#FFD700' : '#ccc',
-          marginRight: '5px',
-          cursor: 'pointer',
-          fontSize: '20px',
-          transition: 'color 0.2s ease'
-        }}
-      ></i>
-    ));
-  };
-
   useEffect(() => {
     fetchTestimonials();
   }, []);
 
-  
-
   return (
     <div className="admin-panel">
-      <h1 className="text-center fw-bold mb-4 text-primary"> Manage Testimonials</h1>
+      <h1 className="text-center fw-bold mb-4 text-primary">Manage Students</h1>
 
-      <h2>Testimonials List</h2>
       <div className="testimonial-grid">
         {testimonials.map((testimonial) => (
           <div key={testimonial._id} className="testimonial-card">
-            {editTestimonial === testimonial._id ? (
+            {editTestimonial && editTestimonial._id === testimonial._id ? (
               <form
-                onSubmit={(e) => handleFormSubmit(e, testimonial._id)}
-                className="inline-form"
+                onSubmit={handleUpdate}
                 encType="multipart/form-data"
+                className="inline-form"
               >
                 <input
                   type="text"
                   name="name"
                   placeholder="Name"
-                  value={formData.name}
-                  onChange={handleFormChange}
+                  value={editTestimonial.name}
+                  onChange={handleEditChange}
                   required
                 />
-                <div className="rating-stars">
-                  {renderInteractiveStars()}
-                </div>
-                <textarea
-                  name="review"
-                  placeholder="Review"
-                  value={formData.review}
-                  onChange={handleFormChange}
+                <input
+                  type="text"
+                  name="company"
+                  placeholder="Company"
+                  value={editTestimonial.company}
+                  onChange={handleEditChange}
+                  required
+                />
+                <input
+                  type="text"
+                  name="package"
+                  placeholder="Package"
+                  value={editTestimonial.package}
+                  onChange={handleEditChange}
                   required
                 />
                 <input
                   type="file"
                   name="image"
                   accept="image/*"
-                  onChange={handleFormChange}
+                  onChange={handleEditChange}
                 />
                 <div className="testimonial-actions">
                   <button type="submit" className="save-btn">Save</button>
-                  <button type="button" className="cancel-btn" onClick={() => setEditTestimonial(null)}>Cancel</button>
+                  <button
+                    type="button"
+                    className="cancel-btn"
+                    onClick={() => setEditTestimonial(null)}
+                  >
+                    Cancel
+                  </button>
                 </div>
               </form>
             ) : (
               <>
                 <img
-                  src={`${testimonial.image}`}
+                  src={testimonial.image}
                   alt={testimonial.name}
-                  className="testimonial-image"
+                  className="testimonial-image rounded"
                 />
                 <div className="testimonial-content">
-                  <h3>{testimonial.name}</h3>
-                  <p><strong>Rating:</strong> {renderStars(testimonial.rating)}</p>
-                  <p>{testimonial.review}</p>
+                  <h3 className='text-dark'>{testimonial.name}</h3>
+                  <p className='text-dark'><strong>Company:</strong> {testimonial.company}</p>
+                  <p className='text-dark'><strong>Package:</strong> {testimonial.package}</p>
                   <div className="testimonial-actions">
-                    <button className="edit-btn" onClick={() => handleEditClick(testimonial)}>Edit</button>
-                    <button className="delete-btn" onClick={() => deleteTestimonial(testimonial._id)}>Delete</button>
+                    <button
+                      className="edit-btn"
+                      onClick={() => setEditTestimonial(testimonial)}
+                    >
+                      Edit
+                    </button>
+                    <button
+                      className="delete-btn"
+                      onClick={() => deleteTestimonial(testimonial._id)}
+                    >
+                      Delete
+                    </button>
                   </div>
                 </div>
               </>
@@ -173,7 +149,12 @@ const StudentManeger = () => {
           </div>
         ))}
       </div>
-      <TestimonialForm/>
+
+      <TestimonialForm
+        fetchTestimonials={fetchTestimonials}
+        editTestimonial={editTestimonial}
+        setEditTestimonial={setEditTestimonial}
+      />
     </div>
   );
 };
