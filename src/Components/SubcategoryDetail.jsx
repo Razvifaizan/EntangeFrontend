@@ -6,8 +6,8 @@ import { MdOutlineAccessTime } from "react-icons/md";
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
 
-import '../assets/SubCat.css'
-import bgimg from '../assets/binary.jpg'
+import '../assets/SubCat.css';
+import bgimg from '../assets/binary.jpg';
 import Nav from "./Nav";
 
 const SubcategoryDetail = () => {
@@ -32,14 +32,30 @@ const SubcategoryDetail = () => {
 
   const handleDownloadPDF = () => {
     const input = pdfRef.current;
-    html2canvas(input, { scale: 2 }).then((canvas) => {
+    html2canvas(input, {
+      scale: 2,
+      scrollY: -window.scrollY,
+      useCORS: true,
+    }).then(canvas => {
       const imgData = canvas.toDataURL('image/png');
       const pdf = new jsPDF('p', 'mm', 'a4');
-      const imgProps = pdf.getImageProperties(imgData);
       const pdfWidth = pdf.internal.pageSize.getWidth();
+      const imgProps = pdf.getImageProperties(imgData);
       const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
 
-      pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+      let heightLeft = pdfHeight;
+      let position = 0;
+
+      pdf.addImage(imgData, 'PNG', 0, position, pdfWidth, pdfHeight);
+      heightLeft -= pdf.internal.pageSize.getHeight();
+
+      while (heightLeft > 0) {
+        position = heightLeft - pdfHeight;
+        pdf.addPage();
+        pdf.addImage(imgData, 'PNG', 0, position, pdfWidth, pdfHeight);
+        heightLeft -= pdf.internal.pageSize.getHeight();
+      }
+
       pdf.save(`${subcategory.name}_Details.pdf`);
     });
   };
@@ -99,7 +115,7 @@ const SubcategoryDetail = () => {
                 <div className="mt-5">
                   <div className="table-responsive">
                     <div className="course-feature">
-                      <h3 className="">Course Feature</h3>
+                      <h3>Course Feature</h3>
                     </div>
                     <table className="table table-bordered custom-vertical-table">
                       <tbody>
@@ -140,12 +156,15 @@ const SubcategoryDetail = () => {
               onClick={() => setShowModal(false)}
             >
               <div
-                className="modal-dialog modal-lg"
+                className="modal-dialog modal-lg modal-fullscreen"
                 onClick={(e) => e.stopPropagation()}
               >
                 <div className="modal-content p-4" ref={pdfRef}>
                   <div className="modal-header">
                     <h5 className="modal-title">{subcategory.name} - Full Details</h5>
+                    <button className="btn btn-success ms-auto" onClick={handleDownloadPDF}>
+                      Download PDF
+                    </button>
                     <button
                       type="button"
                       className="btn-close"
@@ -153,8 +172,8 @@ const SubcategoryDetail = () => {
                     ></button>
                   </div>
                   <div className="modal-body">
-                    <p><strong className='text-dark'>Description:</strong> {subcategory.description}</p>
-                    <p><strong className='text-dark'>Duration:</strong> {subcategory.duration}</p>
+                    <p className='text-dark'><strong>Description:</strong> {subcategory.description}</p>
+                    <p className='text-dark'><strong>Duration:</strong> {subcategory.duration}</p>
 
                     <h5>Topics & Subtopics</h5>
                     {subcategory.topics.map((topic) => (
@@ -165,13 +184,12 @@ const SubcategoryDetail = () => {
                           <ul>
                             {topic.subtopics.map((subtopic) => (
                               <li key={subtopic._id}>
-                                <strong>{subtopic.title}:</strong> {subtopic.videoUrl ? (
-                                  <a href={subtopic.videoUrl} target="_blank" rel="noreferrer">Video Link</a>
-                                ) : 'No video'}
+                                <strong>{subtopic.title}</strong>
                               </li>
                             ))}
                           </ul>
                         ) : <p>No Subtopics</p>}
+                        <hr />
                       </div>
                     ))}
                   </div>
