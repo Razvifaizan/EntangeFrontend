@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { Link, useParams } from 'react-router-dom';
+import { BsCurrencyRupee } from "react-icons/bs";
 import axios from 'axios';
 import { FaClock, FaLanguage, FaCertificate, FaUserTie } from 'react-icons/fa';
 import { MdOutlineAccessTime } from "react-icons/md";
@@ -139,6 +140,10 @@ const SubcategoryDetail = () => {
                           <th className='font feature-table'><FaClock style={{ fontSize: "40px" }} /> Flexible Timing</th>
                           <td className='t-data'>Yes</td>
                         </tr>
+                        <tr>
+  <th className='font feature-table'> <BsCurrencyRupee style={{ fontSize: "40px" }} />Fees</th>
+  <td className='t-data'>₹{subcategory.fees}</td>
+</tr>
                       </tbody>
                     </table>
                   </div>
@@ -174,6 +179,7 @@ const SubcategoryDetail = () => {
                   <div className="modal-body">
                     <p className='text-dark'><strong>Description:</strong> {subcategory.description}</p>
                     <p className='text-dark'><strong>Duration:</strong> {subcategory.duration}</p>
+                    
 
                     <h5>Topics & Subtopics</h5>
                     {subcategory.topics.map((topic) => (
