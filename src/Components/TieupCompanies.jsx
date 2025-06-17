@@ -26,7 +26,7 @@ const TieupCompanies = () => {
         {companies.map((company, index) => (
           <div className="company-card" key={index}>
             <img src={company.logo} alt={company.name} className="company-logo" />
-            <p className='company-name'>{company.name}</p>
+            <p className='company-name1'>{company.name}</p>
           </div>
         ))}
       </div>
