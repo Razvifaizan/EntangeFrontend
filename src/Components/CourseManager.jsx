@@ -10,7 +10,7 @@ const CourseManager = () => {
   const [subcategoryImage, setSubcategoryImage] = useState(null);
   const [description, setDescription] = useState('');
   const [duration, setDuration] = useState('');
-  const [fees, setFees] = useState(''); // ✅ Added fees
+  const [fees, setFees] = useState(''); 
   const [courses, setCourses] = useState([]);
   const [selectedCourseId, setSelectedCourseId] = useState('');
   const [selectedSubcategoryId, setSelectedSubcategoryId] = useState('');

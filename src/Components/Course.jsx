@@ -40,7 +40,7 @@ const Course = () => {
   const headingText = "Our Courses";
 
   return (
-    <>
+    <> 
    
        <div className="course-bg content-wrapper pt-3" id="courses">
 

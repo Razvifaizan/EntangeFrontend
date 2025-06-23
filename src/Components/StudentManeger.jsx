@@ -41,7 +41,7 @@ const StudentManeger = () => {
   const handleUpdate = async (e) => {
     e.preventDefault();
     const formData = new FormData();
-    formData.append('name', editTestimonial.name);
+    formData.append('name', editTestimonial.nam);
     formData.append('company', editTestimonial.company);
     formData.append('package', editTestimonial.package);
     if (editTestimonial.image instanceof File) {

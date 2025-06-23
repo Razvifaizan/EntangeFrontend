@@ -2,3 +2,7 @@ body {
     scroll-padding-top: 70px;
     /* offset for navbar */
 }
+.bpFab{
+    height: 10rem;
+    width: 10rem;
+}
